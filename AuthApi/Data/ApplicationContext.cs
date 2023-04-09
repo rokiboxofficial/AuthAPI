@@ -15,6 +15,8 @@ public class ApplicationContext : DbContext
         Database.EnsureCreated();
     }
 
+    public DbSet<RefreshSession> RefreshSessions => Set<RefreshSession>();
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlite($"Data Source={_databasePath}");
 }

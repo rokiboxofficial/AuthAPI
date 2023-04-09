@@ -8,23 +8,23 @@ namespace AuthApi.Filters;
 
 public sealed class RefreshTokenHandlerAttribute : ActionFilterAttribute
 {
-    private const string RefreshTokenCookieName = "refresh-token";
-    private const string RefreshTokenIdClaimName = "refresh-token-id";
+    private readonly string _refreshSessionIdItemName;
+    private readonly string _refreshTokenCookieName;
     private TokenValidationParameters _tokenValidationParameters;
     private JwtSecurityTokenHandler _jwtSecurityTokenHandler = new ();
-    private readonly string _refreshTokenIdItemName;
 
-    public RefreshTokenHandlerAttribute(string refreshTokenIdItemName)
+    public RefreshTokenHandlerAttribute(string refreshSessionIdItemName, string refreshTokenCookieName)
     {
         _tokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = false,
             ValidateAudience = false,
-            ValidateLifetime = false,
+            ValidateLifetime = true,
             IssuerSigningKey = AuthTokensConfiguration.GetSymmetricSecurityKey(),
             ValidateIssuerSigningKey = true,
         };
-        _refreshTokenIdItemName = refreshTokenIdItemName;
+        _refreshSessionIdItemName = refreshSessionIdItemName;
+        _refreshTokenCookieName = refreshTokenCookieName;
     }
 
     public override void OnActionExecuting(ActionExecutingContext context)
@@ -33,15 +33,15 @@ public sealed class RefreshTokenHandlerAttribute : ActionFilterAttribute
             Throw("Refresh token cookie is not setted");
         
         var claimsPrincipal = ValidateToken(refreshToken!);
-        var refreshTokenIdClaim = claimsPrincipal.FirstOrDefaultClaimByType(RefreshTokenIdClaimName);
-        ThrowIfNull(refreshTokenIdClaim, "RefreshTokenIdClaim is not setted");
+        var refreshSessionIdClaim = claimsPrincipal.FirstOrDefaultClaimByType(AuthTokensConfiguration.RefreshSessionIdClaimName);
+        ThrowIfNull(refreshSessionIdClaim, "Refresh session id claim is not setted");
 
-        var refreshTokenId = refreshTokenIdClaim!.Value;
-        context.HttpContext.Items[_refreshTokenIdItemName] = refreshTokenId;
+        var refreshSessionId = refreshSessionIdClaim!.Value;
+        context.HttpContext.Items[_refreshSessionIdItemName] = refreshSessionId;
     }
 
     private bool TryGetRefreshTokenFromCookie(ActionExecutingContext context, out string? refreshToken)
-        => context.HttpContext.Request.Cookies.TryGetValue(RefreshTokenCookieName, out refreshToken);
+        => context.HttpContext.Request.Cookies.TryGetValue(_refreshTokenCookieName, out refreshToken);
 
     private System.Security.Claims.ClaimsPrincipal ValidateToken(string refreshToken)
         => _jwtSecurityTokenHandler.ValidateToken(refreshToken, _tokenValidationParameters, out var result);
