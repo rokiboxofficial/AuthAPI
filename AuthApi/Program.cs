@@ -1,5 +1,5 @@
 using AuthApi.Data;
-using AuthApi.Services;
+using AuthApi.Extensions;
 
 internal sealed class Program
 {
@@ -7,9 +7,9 @@ internal sealed class Program
     {
         var builder = WebApplication.CreateBuilder();
         builder.Services.AddControllers();
+        builder.Services.AddServices();
         builder.Services.AddDbContext<ApplicationContext>();
-        builder.Services.AddTransient<JwtTokensFactoryService>();
-        builder.Services.AddTransient<TokensRefreshingService>();
+
         var app = builder.Build();        
         app.UseHttpsRedirection();
         app.MapControllers();

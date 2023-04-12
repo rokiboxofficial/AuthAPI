@@ -16,6 +16,7 @@ public class ApplicationContext : DbContext
     }
 
     public DbSet<RefreshSession> RefreshSessions => Set<RefreshSession>();
+    public DbSet<User> Users => Set<User>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlite($"Data Source={_databasePath}");

@@ -5,6 +5,7 @@ namespace AuthApi.Configuration;
 
 internal sealed class AuthTokensConfiguration
 {
+    public const string RefreshTokenCookieName = "refresh-token";
     public const string RefreshSessionIdClaimName = "refresh-session-id";
     public const string UserIdClaimName = "user-id";
     private const int DaysInMonth = 30;
