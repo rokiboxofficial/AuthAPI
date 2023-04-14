@@ -23,14 +23,14 @@ public sealed class RegistrationService
 
     public async Task<(JwtSecurityToken refreshToken, JwtSecurityToken accessToken)> RegisterAsync(AuthenticationData authenticationData)
     {
-        var fingeprint = authenticationData.Fingerprint;
+        var fingerprint = authenticationData.Fingerprint;
         var password = authenticationData.Password;
 
         var salt = GenerateSalt();
         var passwordHash = _passwordHashingService.HashPassword(password, salt);
         var user = await CreateAndSaveUser(authenticationData, salt, passwordHash);
 
-        var refreshToken = await _jwtTokensFactoryService.CreateRefreshTokenAsync(user.Id, fingeprint);
+        var refreshToken = await _jwtTokensFactoryService.CreateRefreshTokenAsync(user.Id, fingerprint);
         var accessToken = _jwtTokensFactoryService.CreateAccessToken(user.Id);
 
         return (refreshToken, accessToken);

@@ -30,11 +30,12 @@ public sealed class RefreshTokenHandlerAttribute : ActionFilterAttribute
     public override void OnActionExecuting(ActionExecutingContext context)
     {
         if(!TryGetRefreshTokenFromCookie(context, out var refreshToken))
-            Throw("Refresh token cookie is not setted");
+            throw new SecurityTokenException("Refresh token cookie is not setted");
         
         var claimsPrincipal = ValidateToken(refreshToken!);
         var refreshSessionIdClaim = claimsPrincipal.FirstOrDefaultClaimByType(AuthTokensConfiguration.RefreshSessionIdClaimName);
-        ThrowIfNull(refreshSessionIdClaim, "Refresh session id claim is not setted");
+        if(refreshSessionIdClaim == null)
+            throw new SecurityTokenException("Refresh session id claim is not setted");
 
         var refreshSessionId = refreshSessionIdClaim!.Value;
         context.HttpContext.Items[_refreshSessionIdItemName] = refreshSessionId;
@@ -45,13 +46,4 @@ public sealed class RefreshTokenHandlerAttribute : ActionFilterAttribute
 
     private System.Security.Claims.ClaimsPrincipal ValidateToken(string refreshToken)
         => _jwtSecurityTokenHandler.ValidateToken(refreshToken, _tokenValidationParameters, out var result);
-    
-    private void ThrowIfNull(object? argument, string? message = null)
-    {
-        if(argument == null)
-            Throw(message);
-    }
-
-    private void Throw(string? message)
-        => throw new SecurityTokenException(message);
 }

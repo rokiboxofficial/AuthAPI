@@ -8,7 +8,6 @@ public sealed class PasswordHashingService
     private const int IterationCount = 10000;
     private const int NumberBytesRequested = 20;
 
-
     public string HashPassword(string password, string salt)
     {
         var saltBytes = Convert.FromBase64String(salt);

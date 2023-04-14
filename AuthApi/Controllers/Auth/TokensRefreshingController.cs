@@ -8,6 +8,7 @@ namespace AuthApi.Controllers.Auth;
 
 [ApiController]
 [Route("/auth/refresh-tokens")]
+[ExceptionsHandlerAttribute]
 public sealed class TokensRefreshingController : Controller
 {
     private const string RefreshSessionIdItemName = "refresh-session-id";
