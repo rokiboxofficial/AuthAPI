@@ -2,7 +2,6 @@
 using AuthApi.Services;
 using AuthApi.Configuration;
 using AuthApi.Data;
-using Microsoft.EntityFrameworkCore;
 using FluentAssertions;
 
 namespace AuthApi.Tests.UnitTests.JwtTokenTests;
@@ -15,10 +14,7 @@ public class JwtTokensCreationTests : IAsyncLifetime
     public async Task InitializeAsync()
     {
         await _postgreSqlContainer.StartAsync();
-        var optionsBuilder = new DbContextOptionsBuilder<ApplicationContext>();
-        var connectionString = _postgreSqlContainer.GetConnectionString();
-        optionsBuilder.UseNpgsql(connectionString);
-        _applicationContext = new ApplicationContext(optionsBuilder.Options);
+        _applicationContext = _postgreSqlContainer.CreateApplicationContext();
         await Task.CompletedTask;
     }
 
