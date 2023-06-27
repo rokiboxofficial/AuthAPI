@@ -8,21 +8,23 @@ namespace AuthApi.Filters;
 
 public sealed class RefreshTokenHandlerAttribute : ActionFilterAttribute
 {
+    private readonly AuthTokensConfiguration _authTokensConfiguration;
     private readonly string _refreshSessionIdItemName;
     private readonly string _refreshTokenCookieName;
     private TokenValidationParameters _tokenValidationParameters;
     private JwtSecurityTokenHandler _jwtSecurityTokenHandler = new ();
 
-    public RefreshTokenHandlerAttribute(string refreshSessionIdItemName, string refreshTokenCookieName)
+    public RefreshTokenHandlerAttribute(AuthTokensConfiguration authTokensConfiguration,string refreshSessionIdItemName, string refreshTokenCookieName)
     {
         _tokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = false,
             ValidateAudience = false,
             ValidateLifetime = true,
-            IssuerSigningKey = AuthTokensConfiguration.GetSymmetricSecurityKey(),
+            IssuerSigningKey = authTokensConfiguration.SymmetricSecurityKey,
             ValidateIssuerSigningKey = true,
         };
+        _authTokensConfiguration = authTokensConfiguration;
         _refreshSessionIdItemName = refreshSessionIdItemName;
         _refreshTokenCookieName = refreshTokenCookieName;
     }
@@ -33,7 +35,7 @@ public sealed class RefreshTokenHandlerAttribute : ActionFilterAttribute
             throw new SecurityTokenException("Refresh token cookie is not setted");
         
         var claimsPrincipal = ValidateToken(refreshToken!);
-        var refreshSessionIdClaim = claimsPrincipal.FirstOrDefaultClaimByType(AuthTokensConfiguration.RefreshSessionIdClaimName);
+        var refreshSessionIdClaim = claimsPrincipal.FirstOrDefaultClaimByType(_authTokensConfiguration.RefreshSessionIdClaimName);
         if(refreshSessionIdClaim == null)
             throw new SecurityTokenException("Refresh session id claim is not setted");
 

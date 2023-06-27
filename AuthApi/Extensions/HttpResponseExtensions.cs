@@ -1,12 +1,11 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using AuthApi.Configuration;
 
 namespace AuthApi.Extensions;
 
 public static class HttpResponseExtensions
 {
-    public static void SetRefreshTokenCookie(this HttpResponse httpResponse, JwtSecurityToken refreshToken)
+    public static void SetRefreshTokenCookie(this HttpResponse httpResponse, string refreshTokenCookieName, JwtSecurityToken refreshToken)
     {
         var serializedRefreshToken = new JwtSecurityTokenHandler().WriteToken(refreshToken);
         var refreshTokenCookieOptions = new CookieOptions()
@@ -16,7 +15,7 @@ public static class HttpResponseExtensions
             Secure = true,
             Path = "/"
         };
-        httpResponse.Cookies.Append(AuthTokensConfiguration.RefreshTokenCookieName, serializedRefreshToken, refreshTokenCookieOptions);
+        httpResponse.Cookies.Append(refreshTokenCookieName, serializedRefreshToken, refreshTokenCookieOptions);
     }
 
     public static async Task SetAccessTokenInBodyAsync(this HttpResponse httpResponse, JwtSecurityToken accessToken)

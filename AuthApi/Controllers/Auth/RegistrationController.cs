@@ -1,3 +1,4 @@
+using AuthApi.Configuration;
 using AuthApi.Entities;
 using AuthApi.Exceptions;
 using AuthApi.Extensions;
@@ -9,20 +10,22 @@ namespace AuthApi.Controllers;
 
 [ApiController]
 [Route("/auth/register")]
-[ExceptionsHandlerAttribute]
+[ExceptionsHandler]
 public sealed class RegistrationController : Controller
 {
+    private readonly AuthTokensConfiguration _authTokensConfiguration;
     private readonly UserFinderService _userFinderService;
     private readonly RegistrationService _registrationService;
 
-    public RegistrationController(UserFinderService userFinderService, RegistrationService registrationService)
+    public RegistrationController(AuthTokensConfiguration authTokensConfiguration, UserFinderService userFinderService, RegistrationService registrationService)
     {
+        _authTokensConfiguration = authTokensConfiguration;
         _userFinderService = userFinderService;
         _registrationService = registrationService;
     }
 
     [HttpPost]
-    public async void Register([FromForm] AuthenticationData authenticationData)
+    public async void Register([FromBody] AuthenticationData authenticationData)
     {
         if(await _userFinderService.FindAsync(authenticationData.Login) != null)
             throw new UserAlreadyExistsException();
@@ -30,7 +33,7 @@ public sealed class RegistrationController : Controller
         var (refreshToken, accessToken) = await _registrationService.RegisterAsync(authenticationData);
         
         var response = HttpContext.Response;
-        response.SetRefreshTokenCookie(refreshToken);
+        response.SetRefreshTokenCookie(_authTokensConfiguration.RefreshTokenCookieName, refreshToken);
         await response.SetAccessTokenInBodyAsync(accessToken);
     }
 }

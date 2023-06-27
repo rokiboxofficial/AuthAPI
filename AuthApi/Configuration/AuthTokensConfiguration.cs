@@ -3,23 +3,25 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace AuthApi.Configuration;
 
-internal sealed class AuthTokensConfiguration
+public sealed class AuthTokensConfiguration
 {
-    public const string RefreshTokenCookieName = "refresh-token";
-    public const string RefreshSessionIdClaimName = "refresh-session-id";
-    public const string UserIdClaimName = "user-id";
-    private const int DaysInMonth = 30;
-    private const string KEY = "testtesttesttest";
+    private string _key = "testtesttesttest";
+    private int _daysInMonth = 30;
 
-    public static string SecuirtyAlgorithm =>
+    public AuthTokensConfiguration()
+    {
+    }
+
+    public string RefreshSessionIdItemName { get; set; } = "refresh-session-id";
+    public string RefreshSessionIdClaimName { get; set; } = "refresh-session-id";
+    public string RefreshTokenCookieName { get; set; } = "refresh-token";
+    public string UserIdClaimName { get; set; } = "user-id";
+    public string SecurityAlgorithm =>
         SecurityAlgorithms.HmacSha256;
-    
-    public static SymmetricSecurityKey GetSymmetricSecurityKey()
-        => new SymmetricSecurityKey(Encoding.ASCII.GetBytes(KEY));
-
-    public static TimeSpan GetRefreshTokenLifetime()
-        => TimeSpan.FromDays(DaysInMonth * 3);
-
-    public static TimeSpan GetAccessTokenLifetime()
+    public SymmetricSecurityKey SymmetricSecurityKey
+        => new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_key));
+    public TimeSpan RefreshTokenLifetime
+        => TimeSpan.FromDays(_daysInMonth * 3);
+    public TimeSpan AccessTokenLifetime
         => TimeSpan.FromMinutes(10);
 }

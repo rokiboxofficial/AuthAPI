@@ -9,29 +9,31 @@ namespace AuthApi.Services;
 public sealed class JwtTokensFactoryService
 {
     private readonly ApplicationContext _applicationContext;
+    private readonly AuthTokensConfiguration _authTokensConfiguration;
 
-    public JwtTokensFactoryService(ApplicationContext applicationContext)
+    public JwtTokensFactoryService(ApplicationContext applicationContext, AuthTokensConfiguration authTokensConfiguration)
     {
         _applicationContext = applicationContext;
+        _authTokensConfiguration = authTokensConfiguration;
     }
 
     public async Task<JwtSecurityToken> CreateRefreshTokenAsync(int userId, string fingerprint)
     {
-        var expireDate = GetExpireDate(AuthTokensConfiguration.GetRefreshTokenLifetime());
+        var expireDate = GetExpireDate(_authTokensConfiguration.RefreshTokenLifetime);
         var refreshSession = new RefreshSession(fingerprint, expireDate, userId);
 
         _applicationContext.RefreshSessions.Add(refreshSession);
         await _applicationContext.SaveChangesAsync();
 
-        var refreshSessionIdClaim = new Claim(AuthTokensConfiguration.RefreshSessionIdClaimName, refreshSession.Id.ToString());
+        var refreshSessionIdClaim = new Claim(_authTokensConfiguration.RefreshSessionIdClaimName, refreshSession.Id.ToString());
         var jwt = CreateJwtSecurityToken(expireDate, new List<Claim> { refreshSessionIdClaim });
         return jwt;
     }
 
     public JwtSecurityToken CreateAccessToken(int userId)
     {
-        var expireDate = GetExpireDate(AuthTokensConfiguration.GetAccessTokenLifetime());
-        var userIdClaim = new Claim(AuthTokensConfiguration.UserIdClaimName, userId.ToString());
+        var expireDate = GetExpireDate(_authTokensConfiguration.AccessTokenLifetime);
+        var userIdClaim = new Claim(_authTokensConfiguration.UserIdClaimName, userId.ToString());
         
         var jwt = CreateJwtSecurityToken(expireDate, new List<Claim>{ userIdClaim });
         return jwt;
@@ -43,8 +45,8 @@ public sealed class JwtTokensFactoryService
                 claims: claims,
                 expires: expireDate,
                 signingCredentials: new SigningCredentials(
-                    AuthTokensConfiguration.GetSymmetricSecurityKey(),
-                    AuthTokensConfiguration.SecuirtyAlgorithm));
+                    _authTokensConfiguration.SymmetricSecurityKey,
+                    _authTokensConfiguration.SecurityAlgorithm));
     }
 
     private DateTime GetExpireDate(TimeSpan tokenLifeTime)
