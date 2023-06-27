@@ -4,9 +4,9 @@ using AuthApi.Configuration;
 using AuthApi.Data;
 using FluentAssertions;
 
-namespace AuthApi.Tests.UnitTests.JwtTokenTests;
+namespace AuthApi.Tests.UnitTests.ServiceTests;
 
-public class JwtTokensCreationTests : IAsyncLifetime
+public class JwtTokensFactoryServiceTests : IAsyncLifetime
 {
     private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder().Build();
     private ApplicationContext _applicationContext = null!;

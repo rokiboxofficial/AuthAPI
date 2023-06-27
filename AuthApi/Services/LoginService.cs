@@ -24,7 +24,7 @@ public sealed class LoginService
         _jwtTokensFactoryService = jwtTokensFactoryService;
     }
 
-    public async Task<(JwtSecurityToken refreshToken, JwtSecurityToken)> LoginAsync(AuthenticationData authenticationData)
+    public async Task<(JwtSecurityToken refreshToken, JwtSecurityToken accessToken)> LoginAsync(AuthenticationData authenticationData)
     {
         var (login, fingerprint, password) = ParseAuthenticationData(authenticationData);
         
