@@ -6,7 +6,6 @@ namespace AuthApi.Configuration;
 public sealed class AuthTokensConfiguration
 {
     private string _key = "testtesttesttest";
-    private int _daysInMonth = 30;
 
     public AuthTokensConfiguration()
     {
@@ -20,8 +19,6 @@ public sealed class AuthTokensConfiguration
         SecurityAlgorithms.HmacSha256;
     public SymmetricSecurityKey SymmetricSecurityKey
         => new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_key));
-    public TimeSpan RefreshTokenLifetime
-        => TimeSpan.FromDays(_daysInMonth * 3);
-    public TimeSpan AccessTokenLifetime
-        => TimeSpan.FromMinutes(10);
+    public TimeSpan RefreshTokenLifetime { get; set; } = TimeSpan.FromDays(30 * 3);
+    public TimeSpan AccessTokenLifetime { get; set; } =TimeSpan.FromMinutes(10);
 }
