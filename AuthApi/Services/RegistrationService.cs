@@ -1,5 +1,4 @@
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Cryptography;
 using AuthApi.Data;
 using AuthApi.Entities;
 
@@ -10,15 +9,18 @@ public sealed class RegistrationService
     private readonly ApplicationContext _applicationContext;
     private readonly JwtTokensFactoryService _jwtTokensFactoryService;
     private readonly PasswordHashingService _passwordHashingService;
+    private readonly SaltGeneratorService _saltGeneratorService;
 
     public RegistrationService(
         ApplicationContext applicationContext,
         JwtTokensFactoryService jwtTokensFactoryService,
-        PasswordHashingService passwordHashingService)
+        PasswordHashingService passwordHashingService,
+        SaltGeneratorService saltGeneratorService)
     {
         _applicationContext = applicationContext;
         _jwtTokensFactoryService = jwtTokensFactoryService;
         _passwordHashingService = passwordHashingService;
+        _saltGeneratorService = saltGeneratorService;
     }
 
     public async Task<(JwtSecurityToken refreshToken, JwtSecurityToken accessToken)> RegisterAsync(AuthenticationData authenticationData)
@@ -26,22 +28,14 @@ public sealed class RegistrationService
         var fingerprint = authenticationData.Fingerprint;
         var password = authenticationData.Password;
 
-        var salt = GenerateSalt();
+        var salt = _saltGeneratorService.GenerateSalt();
         var passwordHash = _passwordHashingService.HashPassword(password, salt);
-        var user = await CreateAndSaveUser(authenticationData, salt, passwordHash);
+        var user = await CreateAndSaveUser(authenticationData, passwordHash, salt);
 
         var refreshToken = await _jwtTokensFactoryService.CreateRefreshTokenAsync(user.Id, fingerprint);
         var accessToken = _jwtTokensFactoryService.CreateAccessToken(user.Id);
 
         return (refreshToken, accessToken);
-    }
-
-    private string GenerateSalt()
-    {
-        var saltBytes = RandomNumberGenerator.GetBytes(64);
-        var salt = Convert.ToBase64String(saltBytes);
-
-        return salt;
     }
 
     private async Task<User> CreateAndSaveUser(AuthenticationData authenticationData, string passwordHash, string salt)

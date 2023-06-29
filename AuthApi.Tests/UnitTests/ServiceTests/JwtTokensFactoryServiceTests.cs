@@ -3,6 +3,7 @@ using AuthApi.Services;
 using AuthApi.Configuration;
 using AuthApi.Data;
 using FluentAssertions;
+using AuthApi.Tests.Extensions;
 
 namespace AuthApi.Tests.UnitTests.ServiceTests;
 
@@ -30,6 +31,7 @@ public class JwtTokensFactoryServiceTests : IAsyncLifetime
         // Arrange.
         var authTokensConfiguration = new AuthTokensConfiguration();
         var jwtTokensFactoryService = CreateJwtTokensFactoryService(authTokensConfiguration);
+
         var userId = 0;
         
         // Act.
@@ -49,6 +51,7 @@ public class JwtTokensFactoryServiceTests : IAsyncLifetime
         // Arrange.
         var authTokensConfiguration = new AuthTokensConfiguration();
         var jwtTokensFactoryService = CreateJwtTokensFactoryService(authTokensConfiguration);
+
         var userId = 0;
 
         // Act.
@@ -68,6 +71,7 @@ public class JwtTokensFactoryServiceTests : IAsyncLifetime
         // Arrange.
         var authTokensConfiguration = new AuthTokensConfiguration();
         var jwtTokensFactoryService = CreateJwtTokensFactoryService(authTokensConfiguration);
+
         var userId = 0;
         var fingerprint = Guid.NewGuid().ToString();
 
@@ -88,6 +92,7 @@ public class JwtTokensFactoryServiceTests : IAsyncLifetime
         // Arrange.
         var authTokensConfiguration = new AuthTokensConfiguration();
         var jwtTokensFactoryService = CreateJwtTokensFactoryService(authTokensConfiguration);
+
         var userId = 0;
         var fingerprint = Guid.NewGuid().ToString();
     
@@ -95,11 +100,7 @@ public class JwtTokensFactoryServiceTests : IAsyncLifetime
         var refreshToken = await jwtTokensFactoryService.CreateRefreshTokenAsync(userId, fingerprint);
 
         // Assert.
-        var claims = refreshToken.Claims;
-        var refreshSessionIdClaimName = authTokensConfiguration.RefreshSessionIdClaimName;
-        var refreshSessionIdClaim = refreshToken.Claims.First(claim => claim.Type == refreshSessionIdClaimName);
-        var refreshSessionId = int.Parse(refreshSessionIdClaim.Value);
-        var refreshSession = _applicationContext.RefreshSessions.FirstOrDefault(refreshSession => refreshSession.Id == refreshSessionId);
+        var refreshSession = refreshToken.GetRefreshSession(authTokensConfiguration, _applicationContext);
 
         refreshSession.Should().NotBeNull();
     }
@@ -110,6 +111,7 @@ public class JwtTokensFactoryServiceTests : IAsyncLifetime
         // Arrange.
         var authTokensConfiguration = new AuthTokensConfiguration();
         var jwtTokensFactoryService = CreateJwtTokensFactoryService(authTokensConfiguration);
+        
         var userId = 0;
         var fingerprint = Guid.NewGuid().ToString();
 
@@ -117,14 +119,11 @@ public class JwtTokensFactoryServiceTests : IAsyncLifetime
         var refreshToken = await jwtTokensFactoryService.CreateRefreshTokenAsync(userId, fingerprint);
 
         // Assert.
-        var claims = refreshToken.Claims;
-        var refreshSessionIdClaimName = authTokensConfiguration.RefreshSessionIdClaimName;
-        var refreshSessionIdClaim = refreshToken.Claims.First(claim => claim.Type == refreshSessionIdClaimName);
-        var refreshSessionId = int.Parse(refreshSessionIdClaim.Value);
-        var refreshSession = _applicationContext.RefreshSessions.FirstOrDefault(refreshSession => refreshSession.Id == refreshSessionId);
+        var refreshSession = refreshToken.GetRefreshSession(authTokensConfiguration, _applicationContext);
 
         var refreshSessionUserId = refreshSession?.UserId;
-        var refreshSessionFingerprint = refreshSession?.Fingerprint; 
+        var refreshSessionFingerprint = refreshSession?.Fingerprint;
+
         refreshSessionUserId.Should().Be(userId);
         refreshSessionFingerprint.Should().Be(fingerprint);
     }

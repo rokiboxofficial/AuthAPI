@@ -1,10 +1,9 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Cryptography;
 using AuthApi.Configuration;
 using AuthApi.Data;
 using AuthApi.Entities;
 using AuthApi.Exceptions;
 using AuthApi.Services;
+using AuthApi.Tests.Extensions;
 using FluentAssertions;
 using Testcontainers.PostgreSql;
 
@@ -29,7 +28,7 @@ public class LoginServiceTests : IAsyncLifetime
     }
 
     [Fact]
-    public async void WhenLogging_AndLoginDoesNotExist_ThenShouldThrowedException()
+    public async void WhenLogging_AndLoginDoesNotExist_ThenShouldThrowsUserDoesNotExistsException()
     {
         // Arrange.
         var authTokensConfiguration = new AuthTokensConfiguration();
@@ -48,9 +47,10 @@ public class LoginServiceTests : IAsyncLifetime
     }
 
     [Fact]
-    public async void WhenLogging_AndPasswordIsNotCorrect_ThenShouldThrowedException()
+    public async void WhenLogging_AndPasswordIsNotCorrect_ThenShouldThrowsWrongCredentialsException()
     {
         // Arrange.
+        var saltGeneratorService = new SaltGeneratorService();
         var authTokensConfiguration = new AuthTokensConfiguration();
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
         var passwordHashingService = new PasswordHashingService();
@@ -62,8 +62,7 @@ public class LoginServiceTests : IAsyncLifetime
         var wrongPassword = Guid.NewGuid().ToString();
         var fingerprint = Guid.NewGuid().ToString();
 
-        var saltBytes = RandomNumberGenerator.GetBytes(64);
-        var salt = Convert.ToBase64String(saltBytes);
+        var salt = saltGeneratorService.GenerateSalt();
         var passwordHash = passwordHashingService.HashPassword(password, salt);
         
         var user = new User(login, passwordHash, salt);
@@ -82,5 +81,87 @@ public class LoginServiceTests : IAsyncLifetime
 
         // Assert.
         await act.Should().ThrowAsync<WrongCredentialsException>();
+    }
+
+    [Fact]
+    public async void WhenLogging_AndAuthenticationDataIsCorrect_ThenRefreshSessionShouldBeCorrect()
+    {
+        // Arrange.
+        var saltGeneratorService = new SaltGeneratorService();
+        var authTokensConfiguration = new AuthTokensConfiguration();
+        var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
+        var passwordHashingService = new PasswordHashingService();
+        var userFinderService = new UserFinderService(_applicationContext);
+        var loginService = new LoginService(_applicationContext, passwordHashingService, userFinderService, jwtTokensFactoryService);
+        
+        var login = Guid.NewGuid().ToString();
+        var password = Guid.NewGuid().ToString();
+        var fingerprint = Guid.NewGuid().ToString();
+
+        var salt = saltGeneratorService.GenerateSalt();
+        var passwordHash = passwordHashingService.HashPassword(password, salt);
+        
+        var user = new User(login, passwordHash, salt);
+        _applicationContext.Users.Add(user);
+        await _applicationContext.SaveChangesAsync();
+
+        var authenticationData = new AuthenticationData()
+        {
+            Login = login,
+            Password = password,
+            Fingerprint = fingerprint
+        };
+    
+        // Act.
+        var (refreshToken, _) = await loginService.LoginAsync(authenticationData);
+
+        // Assert.
+        var refreshSession = refreshToken.GetRefreshSession(authTokensConfiguration, _applicationContext);
+        
+        var refreshSessionUserId = refreshSession?.UserId;
+        var refreshSessionFingerprint = refreshSession?.Fingerprint;
+
+        refreshSessionUserId.Should().Be(user.Id);
+        refreshSessionFingerprint.Should().Be(fingerprint);
+    }
+
+    [Fact]
+    public async void WhenLogging_AndAuthenticationDataIsCorrect_ThenAccessTokenShouldContainsCorrectUserId()
+    {
+        // Arrange.
+        var saltGeneratorService = new SaltGeneratorService();
+        var authTokensConfiguration = new AuthTokensConfiguration();
+        var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
+        var passwordHashingService = new PasswordHashingService();
+        var userFinderService = new UserFinderService(_applicationContext);
+        var loginService = new LoginService(_applicationContext, passwordHashingService, userFinderService, jwtTokensFactoryService);
+        
+        var login = Guid.NewGuid().ToString();
+        var password = Guid.NewGuid().ToString();
+        var fingerprint = Guid.NewGuid().ToString();
+
+        var salt = saltGeneratorService.GenerateSalt();
+        var passwordHash = passwordHashingService.HashPassword(password, salt);
+        
+        var user = new User(login, passwordHash, salt);
+        _applicationContext.Users.Add(user);
+        await _applicationContext.SaveChangesAsync();
+
+        var authenticationData = new AuthenticationData()
+        {
+            Login = login,
+            Password = password,
+            Fingerprint = fingerprint
+        };
+
+        // Act.
+        var (_, accessToken) = await loginService.LoginAsync(authenticationData);
+    
+        // Assert.
+        var userIdClaimName = authTokensConfiguration.UserIdClaimName;
+        var userIdClaim = accessToken.Claims.FirstOrDefault(claim => claim.Type == userIdClaimName);
+        var userId = userIdClaim?.Value;
+
+        userId.Should().Be(user.Id.ToString());
     }
 }

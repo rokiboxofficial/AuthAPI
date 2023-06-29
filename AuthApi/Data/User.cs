@@ -1,5 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace AuthApi.Data;
 
+[Index(nameof(Login), IsUnique = true)]
 public sealed class User
 {
     public int Id { get; set; }
