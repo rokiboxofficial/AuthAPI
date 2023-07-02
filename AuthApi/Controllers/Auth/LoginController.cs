@@ -25,7 +25,7 @@ public sealed class LoginController : Controller
     public async Task Login([FromBody] AuthenticationData authenticationData)
     {
         var (refreshToken, accessToken) = await _loginService.LoginAsync(authenticationData);
-        
+
         var response = HttpContext.Response;
         response.SetRefreshTokenCookie(_authTokensConfiguration.RefreshTokenCookieName, refreshToken);
         await response.SetAccessTokenInBodyAsync(accessToken);

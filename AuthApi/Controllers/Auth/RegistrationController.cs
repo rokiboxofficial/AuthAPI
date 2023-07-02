@@ -25,7 +25,7 @@ public sealed class RegistrationController : Controller
     }
 
     [HttpPost]
-    public async void Register([FromBody] AuthenticationData authenticationData)
+    public async Task Register([FromBody] AuthenticationData authenticationData)
     {
         if(await _userFinderService.FindAsync(authenticationData.Login) != null)
             throw new UserAlreadyExistsException();
