@@ -11,6 +11,7 @@ internal sealed class Program
         builder.Services.AddControllers();
         builder.Services.AddServices();
         builder.Services.AddTransient<AuthTokensConfiguration>();
+
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
         builder.Services.AddDbContext<ApplicationContext>(options
             => options.UseNpgsql(connectionString));
