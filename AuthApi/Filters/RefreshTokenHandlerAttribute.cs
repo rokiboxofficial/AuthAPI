@@ -14,7 +14,7 @@ public sealed class RefreshTokenHandlerAttribute : ActionFilterAttribute
     private TokenValidationParameters _tokenValidationParameters;
     private JwtSecurityTokenHandler _jwtSecurityTokenHandler = new ();
 
-    public RefreshTokenHandlerAttribute(AuthTokensConfiguration authTokensConfiguration,string refreshSessionIdItemName, string refreshTokenCookieName)
+    public RefreshTokenHandlerAttribute(AuthTokensConfiguration authTokensConfiguration)
     {
         _tokenValidationParameters = new TokenValidationParameters
         {
@@ -25,8 +25,8 @@ public sealed class RefreshTokenHandlerAttribute : ActionFilterAttribute
             ValidateIssuerSigningKey = true,
         };
         _authTokensConfiguration = authTokensConfiguration;
-        _refreshSessionIdItemName = refreshSessionIdItemName;
-        _refreshTokenCookieName = refreshTokenCookieName;
+        _refreshSessionIdItemName = authTokensConfiguration.RefreshSessionIdItemName;
+        _refreshTokenCookieName = authTokensConfiguration.RefreshTokenCookieName;
     }
 
     public override void OnActionExecuting(ActionExecutingContext context)
