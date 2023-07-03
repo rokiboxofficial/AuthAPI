@@ -2,6 +2,7 @@ using System.Security;
 using System.Security.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace AuthApi.Filters;
@@ -12,7 +13,7 @@ public sealed class ExceptionsHandlerAttribute : ExceptionFilterAttribute
     {
         var exception = context.Exception;
 
-        if(exception is AuthenticationException or SecurityException or SecurityTokenException)
+        if(exception is AuthenticationException or SecurityException or SecurityTokenException or DbUpdateException)
             context.Result = new UnauthorizedResult();
     }
 }

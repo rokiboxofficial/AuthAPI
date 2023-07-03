@@ -41,7 +41,7 @@ public class RegistrationControllerTests : IAsyncLifetime
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
         var saltGeneratorService = new SaltGeneratorService();
         var registrationService = new RegistrationService(_applicationContext, jwtTokensFactoryService, passwordHashingService, saltGeneratorService);
-        var registrationController = new RegistrationController(authTokensConfiguration, userFinderService, registrationService);
+        var registrationController = new RegistrationController(authTokensConfiguration, registrationService);
 
         var httpContext = new Mock<HttpContext>();
         var refreshTokenCookie = new MockResponseCookieCollection();
@@ -78,7 +78,7 @@ public class RegistrationControllerTests : IAsyncLifetime
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
         var saltGeneratorService = new SaltGeneratorService();
         var registrationService = new RegistrationService(_applicationContext, jwtTokensFactoryService, passwordHashingService, saltGeneratorService);
-        var registrationController = new RegistrationController(authTokensConfiguration, userFinderService, registrationService);
+        var registrationController = new RegistrationController(authTokensConfiguration, registrationService);
 
         var httpContext = new Mock<HttpContext>();
         var refreshTokenCookie = new MockResponseCookieCollection();
@@ -125,7 +125,7 @@ public class RegistrationControllerTests : IAsyncLifetime
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
         var saltGeneratorService = new SaltGeneratorService();
         var registrationService = new RegistrationService(_applicationContext, jwtTokensFactoryService, passwordHashingService, saltGeneratorService);
-        var registrationController = new RegistrationController(authTokensConfiguration, userFinderService, registrationService);
+        var registrationController = new RegistrationController(authTokensConfiguration, registrationService);
 
         var httpContext = new Mock<HttpContext>();
         var refreshTokenCookie = new MockResponseCookieCollection();

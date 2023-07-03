@@ -28,8 +28,6 @@ public sealed class TokensRefreshingController : Controller
         var refreshSessionId = long.Parse((string) HttpContext.Items[refreshSessionIdItemName]!);
         var (refreshToken, accessToken) = await _tokensRefreshingService.RefreshTokensAsync(refreshSessionId, fingerprint);
 
-        var response = HttpContext.Response;
-        response.SetRefreshTokenCookie(_authTokensConfiguration.RefreshTokenCookieName, refreshToken);
-        await response.SetAccessTokenInBodyAsync(accessToken);
+        await HttpContext.Response.SetAccesAndRefreshTokens(_authTokensConfiguration.RefreshTokenCookieName, refreshToken, accessToken);
     }
 }

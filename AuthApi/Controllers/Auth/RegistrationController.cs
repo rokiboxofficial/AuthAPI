@@ -1,6 +1,5 @@
 using AuthApi.Configuration.Abstractions;
 using AuthApi.Entities;
-using AuthApi.Exceptions;
 using AuthApi.Extensions;
 using AuthApi.Filters;
 using AuthApi.Services;
@@ -14,26 +13,19 @@ namespace AuthApi.Controllers;
 public sealed class RegistrationController : Controller
 {
     private readonly IAuthTokensConfiguration _authTokensConfiguration;
-    private readonly UserFinderService _userFinderService;
     private readonly RegistrationService _registrationService;
 
-    public RegistrationController(IAuthTokensConfiguration authTokensConfiguration, UserFinderService userFinderService, RegistrationService registrationService)
+    public RegistrationController(IAuthTokensConfiguration authTokensConfiguration, RegistrationService registrationService)
     {
         _authTokensConfiguration = authTokensConfiguration;
-        _userFinderService = userFinderService;
         _registrationService = registrationService;
     }
 
     [HttpPost]
     public async Task Register([FromBody] AuthenticationData authenticationData)
     {
-        if(await _userFinderService.FindAsync(authenticationData.Login) != null)
-            throw new UserAlreadyExistsException();
-
         var (refreshToken, accessToken) = await _registrationService.RegisterAsync(authenticationData);
-        
-        var response = HttpContext.Response;
-        response.SetRefreshTokenCookie(_authTokensConfiguration.RefreshTokenCookieName, refreshToken);
-        await response.SetAccessTokenInBodyAsync(accessToken);
+
+        await HttpContext.Response.SetAccesAndRefreshTokens(_authTokensConfiguration.RefreshTokenCookieName, refreshToken, accessToken);
     }
 }
