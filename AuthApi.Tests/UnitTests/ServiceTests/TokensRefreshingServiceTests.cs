@@ -31,7 +31,7 @@ public class TokensRefreshingServiceTests : IAsyncLifetime
     public async void WhenRefreshingTokens_AndRefreshSessionIdIsWrong_ThenShouldThrowSecurityTokenException()
     {
         // Arrange.
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
         var tokensRefreshingService = new TokensRefreshingService(_applicationContext, jwtTokensFactoryService);
 
@@ -46,7 +46,7 @@ public class TokensRefreshingServiceTests : IAsyncLifetime
     public async void WhenRefreshingTokens_AndRefreshSessionIsExpired_ThenShouldThrowSecurityTokenExpiredException()
     {
         // Arrange.
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
         var tokensRefreshingService = new TokensRefreshingService(_applicationContext, jwtTokensFactoryService);
 
@@ -68,7 +68,7 @@ public class TokensRefreshingServiceTests : IAsyncLifetime
     public async void WhenRefreshingTokens_AndFingerprintIsWrong_ThenShouldThrowSecurityException()
     {
         // Arrange.
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
         var tokensRefreshingService = new TokensRefreshingService(_applicationContext, jwtTokensFactoryService);
 
@@ -89,7 +89,7 @@ public class TokensRefreshingServiceTests : IAsyncLifetime
     public async void WhenRefreshingTokens_AndFingeprintAndRefreshSessionIdAreCorrect_ThenAccessTokenUserIdShouldBeCorrect()
     {
         // Arrange.
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
         var tokensRefreshingService = new TokensRefreshingService(_applicationContext, jwtTokensFactoryService);
 
@@ -115,7 +115,7 @@ public class TokensRefreshingServiceTests : IAsyncLifetime
     public async void WhenRefreshingTokens_AndFingeprintAndRefreshSessionIdAreCorrect_ThenRefreshSessionShouldBeCorrect()
     {
         // Arrange.
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
         var tokensRefreshingService = new TokensRefreshingService(_applicationContext, jwtTokensFactoryService);
 

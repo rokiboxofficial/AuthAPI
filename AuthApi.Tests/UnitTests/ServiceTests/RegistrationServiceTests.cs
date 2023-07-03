@@ -32,7 +32,7 @@ public class RegistrationServiceTests : IAsyncLifetime
     public async void WhenRegistering_AndUserWithSameLoginAlreadyExists_ThenShouldThrowDbUpdateException()
     {
         // Arrange.
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
         var passwordHashingService = new PasswordHashingService();
         var saltGeneratorService = new SaltGeneratorService();
@@ -60,7 +60,7 @@ public class RegistrationServiceTests : IAsyncLifetime
     public async void WhenRegistering_AndUserIsNotAlreadyExists_ThenRefreshSessionFingerprintShouldBeCorrect()
     {
         // Arrange.
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
         var passwordHashingService = new PasswordHashingService();
         var saltGeneratorService = new SaltGeneratorService();
@@ -87,7 +87,7 @@ public class RegistrationServiceTests : IAsyncLifetime
     public async void WhenRegistering_AndUserIsNotAlreadyExists_ThenAccessTokenAndRefreshSessionShouldHaveSameUserId()
     {
         // Arrange.
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
         var passwordHashingService = new PasswordHashingService();
         var saltGeneratorService = new SaltGeneratorService();
@@ -117,7 +117,7 @@ public class RegistrationServiceTests : IAsyncLifetime
     public async void WhenRegistering_AndUserIsNotAlreadyExists_ThenUserShouldBeCorrect()
     {
         // Arrange.
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
         var passwordHashingService = new PasswordHashingService();
         var saltGeneratorService = new SaltGeneratorService();

@@ -29,7 +29,7 @@ public class JwtTokensFactoryServiceTests : IAsyncLifetime
     public void WhenCreatingAccessToken_ThenUserIdClaimShouldNotBeNull()
     {
         // Arrange.
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var jwtTokensFactoryService = CreateJwtTokensFactoryService(authTokensConfiguration);
 
         var userId = 0;
@@ -49,7 +49,7 @@ public class JwtTokensFactoryServiceTests : IAsyncLifetime
     public void WhenCreatingAccessToken_AndUserIdIs0_ThenUserIdClaimValueShouldBe0()
     {
         // Arrange.
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var jwtTokensFactoryService = CreateJwtTokensFactoryService(authTokensConfiguration);
 
         var userId = 0;
@@ -69,7 +69,7 @@ public class JwtTokensFactoryServiceTests : IAsyncLifetime
     public async Task WhenCreatingRefreshToken_ThenRefreshSessionIdClaimShouldNotBeNull()
     {
         // Arrange.
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var jwtTokensFactoryService = CreateJwtTokensFactoryService(authTokensConfiguration);
 
         var userId = 0;
@@ -90,7 +90,7 @@ public class JwtTokensFactoryServiceTests : IAsyncLifetime
     public async Task WhenCreatingRefreshToken_ThenRefreshSessionShouldNotBeNull()
     {
         // Arrange.
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var jwtTokensFactoryService = CreateJwtTokensFactoryService(authTokensConfiguration);
 
         var userId = 0;
@@ -109,7 +109,7 @@ public class JwtTokensFactoryServiceTests : IAsyncLifetime
     public async Task WhenCreatingRefreshToken_ThenRefreshSessionShouldContainCorrectData()
     {
         // Arrange.
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var jwtTokensFactoryService = CreateJwtTokensFactoryService(authTokensConfiguration);
         
         var userId = 0;
@@ -128,6 +128,6 @@ public class JwtTokensFactoryServiceTests : IAsyncLifetime
         refreshSessionFingerprint.Should().Be(fingerprint);
     }
 
-    private JwtTokensFactoryService CreateJwtTokensFactoryService(AuthTokensConfiguration authTokensConfiguration)
+    private JwtTokensFactoryService CreateJwtTokensFactoryService(FakeAuthTokensConfiguration authTokensConfiguration)
         => new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
 }

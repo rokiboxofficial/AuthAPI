@@ -1,6 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using AuthApi.Configuration;
+using AuthApi.Configuration.Abstractions;
 using AuthApi.Data;
 using Microsoft.IdentityModel.Tokens;
 
@@ -9,9 +9,9 @@ namespace AuthApi.Services;
 public sealed class JwtTokensFactoryService
 {
     private readonly ApplicationContext _applicationContext;
-    private readonly AuthTokensConfiguration _authTokensConfiguration;
+    private readonly IAuthTokensConfiguration _authTokensConfiguration;
 
-    public JwtTokensFactoryService(ApplicationContext applicationContext, AuthTokensConfiguration authTokensConfiguration)
+    public JwtTokensFactoryService(ApplicationContext applicationContext, IAuthTokensConfiguration authTokensConfiguration)
     {
         _applicationContext = applicationContext;
         _authTokensConfiguration = authTokensConfiguration;

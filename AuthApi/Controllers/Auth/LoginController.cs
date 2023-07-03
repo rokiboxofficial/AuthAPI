@@ -1,4 +1,4 @@
-using AuthApi.Configuration;
+using AuthApi.Configuration.Abstractions;
 using AuthApi.Entities;
 using AuthApi.Extensions;
 using AuthApi.Filters;
@@ -12,10 +12,10 @@ namespace AuthApi.Controllers;
 [ExceptionsHandler]
 public sealed class LoginController : Controller
 {
-    private readonly AuthTokensConfiguration _authTokensConfiguration;
+    private readonly IAuthTokensConfiguration _authTokensConfiguration;
     private readonly LoginService _loginService;
 
-    public LoginController(AuthTokensConfiguration authTokensConfiguration, LoginService loginService)
+    public LoginController(IAuthTokensConfiguration authTokensConfiguration, LoginService loginService)
     {
         _authTokensConfiguration = authTokensConfiguration;
         _loginService = loginService;

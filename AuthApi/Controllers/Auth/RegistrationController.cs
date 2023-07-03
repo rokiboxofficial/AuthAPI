@@ -1,4 +1,4 @@
-using AuthApi.Configuration;
+using AuthApi.Configuration.Abstractions;
 using AuthApi.Entities;
 using AuthApi.Exceptions;
 using AuthApi.Extensions;
@@ -13,11 +13,11 @@ namespace AuthApi.Controllers;
 [ExceptionsHandler]
 public sealed class RegistrationController : Controller
 {
-    private readonly AuthTokensConfiguration _authTokensConfiguration;
+    private readonly IAuthTokensConfiguration _authTokensConfiguration;
     private readonly UserFinderService _userFinderService;
     private readonly RegistrationService _registrationService;
 
-    public RegistrationController(AuthTokensConfiguration authTokensConfiguration, UserFinderService userFinderService, RegistrationService registrationService)
+    public RegistrationController(IAuthTokensConfiguration authTokensConfiguration, UserFinderService userFinderService, RegistrationService registrationService)
     {
         _authTokensConfiguration = authTokensConfiguration;
         _userFinderService = userFinderService;

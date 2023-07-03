@@ -1,5 +1,4 @@
 using AuthApi.Configuration;
-using AuthApi.Controllers;
 using AuthApi.Controllers.Auth;
 using AuthApi.Data;
 using AuthApi.Entities;
@@ -36,7 +35,7 @@ public class TokensRefreshingControllerTests : IAsyncLifetime
     public async void WhenRefreshingTokens_AndFingerprintIsCorrect_ThenResponseShouldContainCorrectRefreshTokenCookie()
     {
         // Arrange.
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
         var tokensRefreshingService = new TokensRefreshingService(_applicationContext, jwtTokensFactoryService);
         var tokensRefreshingController = new TokensRefreshingController(tokensRefreshingService, authTokensConfiguration);
@@ -89,7 +88,7 @@ public class TokensRefreshingControllerTests : IAsyncLifetime
     public async void WhenRefreshingTokens_AndFingerprintIsCorrect_ThenRefreshSessionShouldBeCorrect()
     {
         // Arrange.
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
         var tokensRefreshingService = new TokensRefreshingService(_applicationContext, jwtTokensFactoryService);
         var tokensRefreshingController = new TokensRefreshingController(tokensRefreshingService, authTokensConfiguration);
@@ -150,7 +149,7 @@ public class TokensRefreshingControllerTests : IAsyncLifetime
     public async void WhenRefreshingTokens_AndFingerprintIsCorrect_ThenResponseBodyShouldContainCorrectAccessToken()
     {
         // Arrange.
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
         var tokensRefreshingService = new TokensRefreshingService(_applicationContext, jwtTokensFactoryService);
         var tokensRefreshingController = new TokensRefreshingController(tokensRefreshingService, authTokensConfiguration);

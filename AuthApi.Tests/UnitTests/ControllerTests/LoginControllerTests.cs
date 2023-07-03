@@ -35,11 +35,11 @@ public class LoginControllerTests : IAsyncLifetime
     public async void WhenLogging_AndAuthenticationDataIsCorrect_ThenResponseShouldContainCorrectRefreshTokenCookie()
     {
         // Arrange
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var passwordHashingService = new PasswordHashingService();
         var userFinderService = new UserFinderService(_applicationContext);
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
-        var loginService = new LoginService(_applicationContext, passwordHashingService, userFinderService, jwtTokensFactoryService);
+        var loginService = new LoginService(passwordHashingService, userFinderService, jwtTokensFactoryService);
         var loginController = new LoginController(authTokensConfiguration, loginService);
         var httpContext = new Mock<HttpContext>();
         var refreshTokenCookie = new MockResponseCookieCollection();
@@ -76,11 +76,11 @@ public class LoginControllerTests : IAsyncLifetime
     public async void WhenLogging_AndAuthenticationDataIsCorrect_ThenRefreshSessionShouldBeCorrect()
     {
         // Arrange.
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var passwordHashingService = new PasswordHashingService();
         var userFinderService = new UserFinderService(_applicationContext);
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
-        var loginService = new LoginService(_applicationContext, passwordHashingService, userFinderService, jwtTokensFactoryService);
+        var loginService = new LoginService(passwordHashingService, userFinderService, jwtTokensFactoryService);
         var loginController = new LoginController(authTokensConfiguration, loginService);
         var httpContext = new Mock<HttpContext>();
         var refreshTokenCookie = new MockResponseCookieCollection();
@@ -128,11 +128,11 @@ public class LoginControllerTests : IAsyncLifetime
     public async void WhenLogging_AndAuthenticationDataIsCorrect_ThenResponseBodyShouldContainCorrectAccessToken()
     {
         // Arrange.
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var passwordHashingService = new PasswordHashingService();
         var userFinderService = new UserFinderService(_applicationContext);
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
-        var loginService = new LoginService(_applicationContext, passwordHashingService, userFinderService, jwtTokensFactoryService);
+        var loginService = new LoginService(passwordHashingService, userFinderService, jwtTokensFactoryService);
         var loginController = new LoginController(authTokensConfiguration, loginService);
         var httpContext = new Mock<HttpContext>();
         var refreshTokenCookie = new MockResponseCookieCollection();

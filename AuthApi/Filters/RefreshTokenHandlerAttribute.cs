@@ -1,5 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
-using AuthApi.Configuration;
+using AuthApi.Configuration.Abstractions;
 using AuthApi.Extensions;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
@@ -8,13 +8,13 @@ namespace AuthApi.Filters;
 
 public sealed class RefreshTokenHandlerAttribute : ActionFilterAttribute
 {
-    private readonly AuthTokensConfiguration _authTokensConfiguration;
+    private readonly IAuthTokensConfiguration _authTokensConfiguration;
     private readonly string _refreshSessionIdItemName;
     private readonly string _refreshTokenCookieName;
     private TokenValidationParameters _tokenValidationParameters;
     private JwtSecurityTokenHandler _jwtSecurityTokenHandler = new ();
 
-    public RefreshTokenHandlerAttribute(AuthTokensConfiguration authTokensConfiguration)
+    public RefreshTokenHandlerAttribute(IAuthTokensConfiguration authTokensConfiguration)
     {
         _tokenValidationParameters = new TokenValidationParameters
         {

@@ -31,11 +31,11 @@ public class LoginServiceTests : IAsyncLifetime
     public async void WhenLogging_AndLoginDoesNotExist_ThenShouldThrowsUserDoesNotExistsException()
     {
         // Arrange.
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
         var passwordHashingService = new PasswordHashingService();
         var userFinderService = new UserFinderService(_applicationContext);
-        var loginService = new LoginService(_applicationContext, passwordHashingService, userFinderService, jwtTokensFactoryService);
+        var loginService = new LoginService(passwordHashingService, userFinderService, jwtTokensFactoryService);
 
         var authenticationData = new AuthenticationData();
 
@@ -51,11 +51,11 @@ public class LoginServiceTests : IAsyncLifetime
     {
         // Arrange.
         var saltGeneratorService = new SaltGeneratorService();
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
         var passwordHashingService = new PasswordHashingService();
         var userFinderService = new UserFinderService(_applicationContext);
-        var loginService = new LoginService(_applicationContext, passwordHashingService, userFinderService, jwtTokensFactoryService);
+        var loginService = new LoginService(passwordHashingService, userFinderService, jwtTokensFactoryService);
         
         var login = Guid.NewGuid().ToString();
         var password = Guid.NewGuid().ToString();
@@ -88,11 +88,11 @@ public class LoginServiceTests : IAsyncLifetime
     {
         // Arrange.
         var saltGeneratorService = new SaltGeneratorService();
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
         var passwordHashingService = new PasswordHashingService();
         var userFinderService = new UserFinderService(_applicationContext);
-        var loginService = new LoginService(_applicationContext, passwordHashingService, userFinderService, jwtTokensFactoryService);
+        var loginService = new LoginService(passwordHashingService, userFinderService, jwtTokensFactoryService);
         
         var login = Guid.NewGuid().ToString();
         var password = Guid.NewGuid().ToString();
@@ -130,11 +130,11 @@ public class LoginServiceTests : IAsyncLifetime
     {
         // Arrange.
         var saltGeneratorService = new SaltGeneratorService();
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
         var passwordHashingService = new PasswordHashingService();
         var userFinderService = new UserFinderService(_applicationContext);
-        var loginService = new LoginService(_applicationContext, passwordHashingService, userFinderService, jwtTokensFactoryService);
+        var loginService = new LoginService(passwordHashingService, userFinderService, jwtTokensFactoryService);
         
         var login = Guid.NewGuid().ToString();
         var password = Guid.NewGuid().ToString();

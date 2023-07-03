@@ -7,18 +7,15 @@ namespace AuthApi.Services;
 
 public sealed class LoginService
 {
-    private readonly ApplicationContext _applicationContext;
     private readonly PasswordHashingService _passwordHashingService;
     private readonly UserFinderService _userFinderService;
-    private readonly  JwtTokensFactoryService _jwtTokensFactoryService;
+    private readonly JwtTokensFactoryService _jwtTokensFactoryService;
 
     public LoginService(
-        ApplicationContext applicationContext,
         PasswordHashingService passwordHashingService,
         UserFinderService userFinderService,
         JwtTokensFactoryService jwtTokensFactoryService)
     {
-        _applicationContext = applicationContext;
         _passwordHashingService = passwordHashingService;
         _userFinderService = userFinderService;
         _jwtTokensFactoryService = jwtTokensFactoryService;

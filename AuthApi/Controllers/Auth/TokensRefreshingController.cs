@@ -1,4 +1,4 @@
-using AuthApi.Configuration;
+using AuthApi.Configuration.Abstractions;
 using AuthApi.Extensions;
 using AuthApi.Filters;
 using AuthApi.Services;
@@ -12,9 +12,9 @@ namespace AuthApi.Controllers.Auth;
 public sealed class TokensRefreshingController : Controller
 {
     private readonly TokensRefreshingService _tokensRefreshingService;
-    private readonly AuthTokensConfiguration _authTokensConfiguration;
+    private readonly IAuthTokensConfiguration _authTokensConfiguration;
 
-    public TokensRefreshingController(TokensRefreshingService tokensRefreshingService, AuthTokensConfiguration authTokensConfiguration)
+    public TokensRefreshingController(TokensRefreshingService tokensRefreshingService, IAuthTokensConfiguration authTokensConfiguration)
     {
         _tokensRefreshingService = tokensRefreshingService;
         _authTokensConfiguration = authTokensConfiguration;

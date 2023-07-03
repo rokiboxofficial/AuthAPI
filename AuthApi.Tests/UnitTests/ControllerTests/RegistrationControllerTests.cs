@@ -35,7 +35,7 @@ public class RegistrationControllerTests : IAsyncLifetime
     public async void WhenRegistering_AndAuthenticationDataIsCorrect_ThenResponseShouldContainCorrectRefreshTokenCookie()
     {
         // Arrange.
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var passwordHashingService = new PasswordHashingService();
         var userFinderService = new UserFinderService(_applicationContext);
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
@@ -72,7 +72,7 @@ public class RegistrationControllerTests : IAsyncLifetime
     public async void WhenRegistering_AndAuthenticationDataIsCorrect_ThenRefreshSessionShouldBeCorrect()
     {
         // Arrange.
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var passwordHashingService = new PasswordHashingService();
         var userFinderService = new UserFinderService(_applicationContext);
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);
@@ -119,7 +119,7 @@ public class RegistrationControllerTests : IAsyncLifetime
     public async void WhenRegistering_AndAuthenticationDataIsCorrect_ThenResponseBodyShouldContainCorrectAccessToken()
     {
         // Arrange.
-        var authTokensConfiguration = new AuthTokensConfiguration();
+        var authTokensConfiguration = new FakeAuthTokensConfiguration();
         var passwordHashingService = new PasswordHashingService();
         var userFinderService = new UserFinderService(_applicationContext);
         var jwtTokensFactoryService = new JwtTokensFactoryService(_applicationContext, authTokensConfiguration);

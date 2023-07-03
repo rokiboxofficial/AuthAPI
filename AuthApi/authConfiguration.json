@@ -1,0 +1,9 @@
+﻿{
+    "Key": "testtesttesttest",
+    "RefreshSessionIdItemName": "refresh-session-id",
+    "RefreshSessionIdClaimName": "refresh-session-id",
+    "RefreshTokenCookieName": "refresh-token",
+    "UserIdClaimName": "user-id",
+    "RefreshTokenLifetimeInSeconds": 7776000,
+    "AccessTokenLifetimeInSeconds" : 600
+}
